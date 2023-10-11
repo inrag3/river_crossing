@@ -53,13 +53,13 @@
 int main()
 {
 	setlocale(LC_ALL, "");
-	Node* initial = new Node(3, 3, 1);
+	Node* initial = new Node(MISSIONARIES, CANNIBALS, 1);
 
 	auto s = std::chrono::steady_clock::now();
 	Node* result = bfs(initial);
 	auto e = std::chrono::steady_clock::now();
 	printf("Алгоритм BFS\n");
-	printf("Время: %I64d us\n", std::chrono::duration_cast<std::chrono::microseconds>(e - s).count());
+	printf("Время: %I64d ms\n", std::chrono::duration_cast<std::chrono::milliseconds>(e - s).count());
 	show_path(result);
 	std::cout << std::endl;
 
@@ -67,7 +67,7 @@ int main()
 	result = dfs(initial);
 	e = std::chrono::steady_clock::now();
 	printf("Алгоритм DFS\n");
-	printf("Время: %I64d us\n", std::chrono::duration_cast<std::chrono::microseconds>(e - s).count());
+	printf("Время: %I64d ms\n", std::chrono::duration_cast<std::chrono::milliseconds>(e - s).count());
 	show_path(result);
 	std::cout << std::endl;
 

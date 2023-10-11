@@ -5,6 +5,9 @@
 using Position = std::tuple<int, int, int>;
 using Move = std::tuple<int, int, int>;
 
+const int MISSIONARIES = 10;
+const int CANNIBALS = 3;
+
 class Node
 {
 	Position _position;

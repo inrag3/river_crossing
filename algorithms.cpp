@@ -7,13 +7,12 @@
 #include "algorithms.h"
 #include "node.h"
 
-using Position = std::tuple<int, int, int>;
-using Move = std::tuple<int, int, int>;
+using Container = std::unordered_set<Node*, NodeHash, NodeEquals>;
 
 Node* bfs(Node* node)
 {
 	std::queue<Node*> queue;
-	std::unordered_set<Node*, NodeHash, NodeEquals> labeled;
+	Container labeled;
 	queue.push(node);
 
 	while (!queue.empty())
@@ -39,7 +38,7 @@ Node* bfs(Node* node)
 Node* dfs(Node* node)
 {
 	std::stack<Node*> stack;
-	std::unordered_set<Node*, NodeHash, NodeEquals> labeled;
+	Container labeled;
 	stack.push(node);
 
 	while (!stack.empty())
@@ -62,7 +61,7 @@ Node* dfs(Node* node)
 	}
 }
 
-Node* dls(Node* node, int current, int limit)
+Node* dls(Node* node, int current, int limit, Container& labeled)
 {
 	if (current > limit)
 		return nullptr;
@@ -70,11 +69,13 @@ Node* dls(Node* node, int current, int limit)
 	if (is_result(node))
 		return node;
 
+	labeled.insert(node);
+
 	for (auto position : get_nodes(node))
 	{
-		if (is_valid(position))
+		if (!labeled.contains(position) && is_valid(position))
 		{
-			Node* result = dls(position, current + 1, limit);
+			Node* result = dls(position, current + 1, limit, labeled);
 			if (result != nullptr)
 				return result;
 		}
@@ -84,9 +85,10 @@ Node* dls(Node* node, int current, int limit)
 
 Node* ids(Node* node)
 {
+	Container labeled;
 	for (int i = 1; i < 20; ++i)
 	{
-		Node* result = dls(node, 0, i);
+		Node* result = dls(node, 0, i, labeled);
 		if (result != nullptr)
 			return result;
 	}
@@ -101,11 +103,11 @@ bool is_result(Node* node)
 bool is_valid(Node* node)
 {
 	auto [x, y, z] = node->position();
-	auto x1 = 3 - x;
-	auto y1 = 3 - y;
+	auto x1 = MISSIONARIES - x;
+	auto y1 = CANNIBALS - y;
 	return !(
-		x > 3 or y > 3 or x < 0 or y < 0 or
-		x1 > 3 or y1 > 3 or x1 < 0 or y1 < 0 or
+		x > MISSIONARIES or y > MISSIONARIES or x < 0 or y < 0 or
+		x1 > MISSIONARIES or y1 > CANNIBALS or x1 < 0 or y1 < 0 or
 		(y > x) and (x > 0) or (y1 > x1 > 0) and (x1 > 0)
 		);
 }
